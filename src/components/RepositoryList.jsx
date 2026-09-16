@@ -11,6 +11,7 @@ const repositories = [
     forksCount: 2200,
     reviewCount: 880,
     ratingAverage: 88,
+    ownerAvatarUrl: "https://avatars.githubusercontent.com/u/1930?v=4",
   },
   {
     id: "rails.rails",
@@ -21,6 +22,7 @@ const repositories = [
     forksCount: 21000,
     reviewCount: 1200,
     ratingAverage: 92,
+    ownerAvatarUrl: "https://avatars.githubusercontent.com/u/4223?v=4",
   },
   {
     id: "facebook.react",
@@ -32,6 +34,7 @@ const repositories = [
     forksCount: 440000,
     reviewCount: 1500,
     ratingAverage: 95,
+    ownerAvatarUrl: "https://avatars.githubusercontent.com/u/69631?v=4",
   },
 ];
 
@@ -41,6 +44,8 @@ const RepositoryList = () => {
   return (
     <FlatList
       data={repositories}
+      style={styles.list}
+      contentContainerStyle={styles.listContent}
       ItemSeparatorComponent={ItemSeparator}
       renderItem={({ item }) => <RepositoryItem item={item} />}
       keyExtractor={(item) => item.id}
@@ -49,8 +54,14 @@ const RepositoryList = () => {
 };
 
 const styles = StyleSheet.create({
+  list: {
+    backgroundColor: "#e1e4e8",
+  },
+  listContent: {
+    backgroundColor: "#e1e4e8",
+  },
   separator: {
-    height: 1,
+    height: 10,
     backgroundColor: "#e1e4e8",
   },
 });
