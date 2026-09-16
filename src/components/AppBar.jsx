@@ -1,17 +1,24 @@
 import Constants from "expo-constants";
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Link } from "react-router-native";
 
 const AppBar = () => {
   return (
     <View style={[styles.container, { paddingTop: Constants.statusBarHeight }]}>
-      <Link to="/" style={styles.link} underlayColor="transparent">
-        <Text style={styles.text}>Repositories</Text>
-      </Link>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+        style={styles.scrollView}
+      >
+        <Link to="/" style={styles.link} underlayColor="transparent">
+          <Text style={styles.text}>Repositories</Text>
+        </Link>
 
-      <Link to="/signin" style={styles.link} underlayColor="transparent">
-        <Text style={styles.text}>Sign in</Text>
-      </Link>
+        <Link to="/signin" style={styles.link} underlayColor="transparent">
+          <Text style={styles.text}>Sign in</Text>
+        </Link>
+      </ScrollView>
     </View>
   );
 };
@@ -21,10 +28,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#24292e",
     paddingBottom: 15,
     paddingHorizontal: 16,
+  },
+  scrollView: {
+    flexGrow: 0,
+  },
+  scrollContent: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-start",
     gap: 20,
+    paddingVertical: 8,
   },
   link: {
     paddingVertical: 8,
