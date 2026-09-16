@@ -1,5 +1,12 @@
+import { Formik } from "formik";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import * as Yup from "yup";
+
+const validationSchema = Yup.object().shape({
+  username: Yup.string().required("Username is required"),
+  password: Yup.string().required("Password is required"),
+});
 
 const SignIn = () => {
   const [username, setUsername] = useState("");
@@ -11,32 +18,77 @@ const SignIn = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.formContainer}>
-        <Text style={styles.title}>Sign in</Text>
+      <Formik
+        initialValues={{ username: "", password: "" }}
+        validationSchema={validationSchema}
+        onSubmit={(values) => {
+          console.log(values);
+        }}
+      >
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+          isValid,
+        }) => {
+          const usernameError = touched.username && errors.username;
+          const passwordError = touched.password && errors.password;
 
-        <TextInput
-          style={styles.input}
-          placeholder="Username"
-          value={username}
-          onChangeText={setUsername}
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
+          return (
+            <View style={styles.formContainer}>
+              <Text style={styles.title}>Sign in</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
+              <View style={styles.fieldContainer}>
+                <TextInput
+                  style={[
+                    styles.input,
+                    usernameError ? styles.inputError : null,
+                  ]}
+                  placeholder="Username"
+                  value={values.username}
+                  onChangeText={handleChange("username")}
+                  onBlur={handleBlur("username")}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+                {usernameError ? (
+                  <Text style={styles.errorText}>{usernameError}</Text>
+                ) : null}
+              </View>
 
-        <Pressable style={styles.button} onPress={onSubmit}>
-          <Text style={styles.buttonText}>Sign in</Text>
-        </Pressable>
-      </View>
+              <View style={styles.fieldContainer}>
+                <TextInput
+                  style={[
+                    styles.input,
+                    passwordError ? styles.inputError : null,
+                  ]}
+                  placeholder="Password"
+                  value={values.password}
+                  onChangeText={handleChange("password")}
+                  onBlur={handleBlur("password")}
+                  secureTextEntry
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+                {passwordError ? (
+                  <Text style={styles.errorText}>{passwordError}</Text>
+                ) : null}
+              </View>
+
+              <Pressable
+                style={[styles.button, !isValid && styles.buttonDisabled]}
+                onPress={handleSubmit}
+                disabled={!isValid}
+              >
+                <Text style={styles.buttonText}>Sign in</Text>
+              </Pressable>
+            </View>
+          );
+        }}
+      </Formik>
     </View>
   );
 };
@@ -67,15 +119,25 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: "#24292e",
   },
+  fieldContainer: {
+    marginBottom: 16,
+  },
   input: {
     borderWidth: 1,
     borderColor: "#d0d7de",
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    marginBottom: 16,
     fontSize: 16,
     backgroundColor: "#fff",
+  },
+  inputError: {
+    borderColor: "#d32f2f",
+  },
+  errorText: {
+    color: "#d32f2f",
+    marginTop: 6,
+    fontSize: 12,
   },
   button: {
     backgroundColor: "#0366d6",
@@ -83,6 +145,10 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     alignItems: "center",
     justifyContent: "center",
+    marginTop: 8,
+  },
+  buttonDisabled: {
+    backgroundColor: "#8ab6f9",
   },
   buttonText: {
     color: "#fff",
