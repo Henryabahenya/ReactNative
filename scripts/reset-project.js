@@ -10,6 +10,7 @@ const fs = require("fs");
 const path = require("path");
 const readline = require("readline");
 
+
 const root = process.cwd();
 const oldDirs = ["src", "scripts"];
 const exampleDir = "example";
@@ -34,6 +35,7 @@ const styles = StyleSheet.create({
   },
 });
 `;
+
 
 const layoutContent = `import { Stack } from "expo-router";
 
