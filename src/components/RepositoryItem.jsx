@@ -1,4 +1,11 @@
-import { Image, Linking, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  Linking,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 const formatCount = (count) => {
   if (count >= 1000) {
@@ -75,6 +82,7 @@ const RepositoryItem = ({ item, showGitHubButton = false }) => {
       )}
     </View>
   );
+};
 
 const styles = StyleSheet.create({
   container: {
