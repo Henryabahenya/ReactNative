@@ -1,7 +1,15 @@
 import { useState } from "react";
-import { FlatList, Pressable, StyleSheet, View } from "react-native";
+import {
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigate } from "react-router-native";
+import { useDebounce } from "use-debounce";
 import { useRepositories } from "../hooks/useRepositories";
 import RepositoryItem from "./RepositoryItem";
 
@@ -25,30 +33,47 @@ const ItemSeparator = () => <View style={styles.separator} />;
 const RepositoryList = () => {
   const navigate = useNavigate();
   const [selectedSort, setSelectedSort] = useState(sortOptions[0].value);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [debouncedSearchKeyword] = useDebounce(searchKeyword, 500);
+
   const { repositories, loading, error } = useRepositories(
     selectedSort.orderBy,
-    selectedSort.orderDirection
+    selectedSort.orderDirection,
+    debouncedSearchKeyword
   );
 
   const handleRepositoryPress = (id) => {
     navigate(`/repository/${id}`);
   };
 
-  const renderSortSelector = () => (
-    <View style={styles.sortContainer}>
-      <Picker
-        selectedValue={selectedSort}
-        onValueChange={(value) => setSelectedSort(value)}
-        style={styles.picker}
-      >
-        {sortOptions.map((option) => (
-          <Picker.Item
-            key={`${option.value.orderBy}-${option.value.orderDirection}`}
-            label={option.label}
-            value={option.value}
-          />
-        ))}
-      </Picker>
+  const renderHeader = () => (
+    <View style={styles.headerContainer}>
+      <View style={styles.sortContainer}>
+        <Picker
+          selectedValue={selectedSort}
+          onValueChange={(value) => setSelectedSort(value)}
+          style={styles.picker}
+        >
+          {sortOptions.map((option) => (
+            <Picker.Item
+              key={`${option.value.orderBy}-${option.value.orderDirection}`}
+              label={option.label}
+              value={option.value}
+            />
+          ))}
+        </Picker>
+      </View>
+
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search repositories"
+          value={searchKeyword}
+          onChangeText={setSearchKeyword}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+      </View>
     </View>
   );
 
@@ -57,7 +82,11 @@ const RepositoryList = () => {
   }
 
   if (error) {
-    return <View style={styles.centered} />;
+    return (
+      <View style={styles.centered}>
+        <Text>Unable to load repositories</Text>
+      </View>
+    );
   }
 
   return (
@@ -66,7 +95,7 @@ const RepositoryList = () => {
       style={styles.list}
       contentContainerStyle={styles.listContent}
       ItemSeparatorComponent={ItemSeparator}
-      ListHeaderComponent={renderSortSelector}
+      ListHeaderComponent={renderHeader}
       renderItem={({ item }) => (
         <Pressable onPress={() => handleRepositoryPress(item.id)}>
           <RepositoryItem item={item} />
@@ -88,6 +117,12 @@ const styles = StyleSheet.create({
     height: 10,
     backgroundColor: "#e1e4e8",
   },
+  headerContainer: {
+    backgroundColor: "#fff",
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#d0d7de",
+  },
   sortContainer: {
     backgroundColor: "#fff",
     marginBottom: 10,
@@ -97,6 +132,18 @@ const styles = StyleSheet.create({
   picker: {
     height: 50,
     width: "100%",
+  },
+  searchContainer: {
+    paddingHorizontal: 12,
+  },
+  searchInput: {
+    height: 42,
+    borderWidth: 1,
+    borderColor: "#d0d7de",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    backgroundColor: "#fff",
+    fontSize: 16,
   },
   centered: {
     flex: 1,
