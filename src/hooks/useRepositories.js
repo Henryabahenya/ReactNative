@@ -1,8 +1,8 @@
 import { gql, useQuery } from "@apollo/client";
 
 export const GET_REPOSITORIES = gql`
-  query repositories {
-    repositories {
+  query repositories($orderBy: RepositoryOrderBy, $orderDirection: OrderDirection) {
+    repositories(orderBy: $orderBy, orderDirection: $orderDirection) {
       edges {
         node {
           id
@@ -20,8 +20,9 @@ export const GET_REPOSITORIES = gql`
   }
 `;
 
-export const useRepositories = () => {
+export const useRepositories = (orderBy = "CREATED_AT", orderDirection = "DESC") => {
   const { data, loading, error } = useQuery(GET_REPOSITORIES, {
+    variables: { orderBy, orderDirection },
     fetchPolicy: "cache-and-network",
   });
 

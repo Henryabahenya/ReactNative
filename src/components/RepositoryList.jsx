@@ -1,41 +1,22 @@
+import { useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 import { useNavigate } from "react-router-native";
+import { useRepositories } from "../hooks/useRepositories";
 import RepositoryItem from "./RepositoryItem";
 
-const repositories = [
+const sortOptions = [
   {
-    id: "jaredpalmer.formik",
-    fullName: "jaredpalmer/formik",
-    description: "Build forms in React, without the tears",
-    language: "TypeScript",
-    stargazersCount: 218000,
-    forksCount: 2200,
-    reviewCount: 880,
-    ratingAverage: 88,
-    ownerAvatarUrl: "https://avatars.githubusercontent.com/u/1930?v=4",
+    label: "Latest repositories",
+    value: { orderBy: "CREATED_AT", orderDirection: "DESC" },
   },
   {
-    id: "rails.rails",
-    fullName: "rails/rails",
-    description: "Ruby on Rails",
-    language: "Ruby",
-    stargazersCount: 520000,
-    forksCount: 21000,
-    reviewCount: 1200,
-    ratingAverage: 92,
-    ownerAvatarUrl: "https://avatars.githubusercontent.com/u/4223?v=4",
+    label: "Highest rated repositories",
+    value: { orderBy: "RATING_AVERAGE", orderDirection: "DESC" },
   },
   {
-    id: "facebook.react",
-    fullName: "facebook/react",
-    description:
-      "A declarative, efficient, and flexible JavaScript library for building user interfaces.",
-    language: "JavaScript",
-    stargazersCount: 2100000,
-    forksCount: 440000,
-    reviewCount: 1500,
-    ratingAverage: 95,
-    ownerAvatarUrl: "https://avatars.githubusercontent.com/u/69631?v=4",
+    label: "Lowest rated repositories",
+    value: { orderBy: "RATING_AVERAGE", orderDirection: "ASC" },
   },
 ];
 
@@ -43,10 +24,41 @@ const ItemSeparator = () => <View style={styles.separator} />;
 
 const RepositoryList = () => {
   const navigate = useNavigate();
+  const [selectedSort, setSelectedSort] = useState(sortOptions[0].value);
+  const { repositories, loading, error } = useRepositories(
+    selectedSort.orderBy,
+    selectedSort.orderDirection
+  );
 
   const handleRepositoryPress = (id) => {
     navigate(`/repository/${id}`);
   };
+
+  const renderSortSelector = () => (
+    <View style={styles.sortContainer}>
+      <Picker
+        selectedValue={selectedSort}
+        onValueChange={(value) => setSelectedSort(value)}
+        style={styles.picker}
+      >
+        {sortOptions.map((option) => (
+          <Picker.Item
+            key={`${option.value.orderBy}-${option.value.orderDirection}`}
+            label={option.label}
+            value={option.value}
+          />
+        ))}
+      </Picker>
+    </View>
+  );
+
+  if (loading) {
+    return <View style={styles.centered} />;
+  }
+
+  if (error) {
+    return <View style={styles.centered} />;
+  }
 
   return (
     <FlatList
@@ -54,6 +66,7 @@ const RepositoryList = () => {
       style={styles.list}
       contentContainerStyle={styles.listContent}
       ItemSeparatorComponent={ItemSeparator}
+      ListHeaderComponent={renderSortSelector}
       renderItem={({ item }) => (
         <Pressable onPress={() => handleRepositoryPress(item.id)}>
           <RepositoryItem item={item} />
@@ -73,6 +86,22 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: 10,
+    backgroundColor: "#e1e4e8",
+  },
+  sortContainer: {
+    backgroundColor: "#fff",
+    marginBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#d0d7de",
+  },
+  picker: {
+    height: 50,
+    width: "100%",
+  },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "#e1e4e8",
   },
 });
