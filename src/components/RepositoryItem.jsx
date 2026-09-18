@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, Linking, Pressable, StyleSheet, Text, View } from "react-native";
 
 const formatCount = (count) => {
   if (count >= 1000) {
@@ -33,7 +33,13 @@ const RepositoryStats = ({ stars, forks, reviews, rating }) => {
   );
 };
 
-const RepositoryItem = ({ item }) => {
+const RepositoryItem = ({ item, showGitHubButton = false }) => {
+  const handleOpenGitHub = () => {
+    if (item.url) {
+      Linking.openURL(item.url);
+    }
+  };
+
   return (
     <View style={styles.container} testID="repositoryItem">
       <View style={styles.headerRow}>
@@ -57,9 +63,18 @@ const RepositoryItem = ({ item }) => {
         reviews={item.reviewCount}
         rating={item.ratingAverage}
       />
+
+      {showGitHubButton && (
+        <Pressable
+          style={styles.githubButton}
+          onPress={handleOpenGitHub}
+          testID="openGitHubButton"
+        >
+          <Text style={styles.githubButtonText}>Open in GitHub</Text>
+        </Pressable>
+      )}
     </View>
   );
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -121,6 +136,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#666",
     marginTop: 4,
+  },
+  githubButton: {
+    backgroundColor: "#0366d6",
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 12,
+  },
+  githubButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
 

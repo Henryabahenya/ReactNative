@@ -3,6 +3,7 @@ import { NativeRouter, Navigate, Route, Routes } from "react-router-native";
 import AppBar from "./components/AppBar";
 import RepositoryList from "./components/RepositoryList";
 import SignIn from "./components/SignIn";
+import SingleRepositoryView from "./components/SingleRepositoryView";
 
 const Main = () => {
   return (
@@ -13,6 +14,7 @@ const Main = () => {
         <Routes>
           <Route path="/" element={<RepositoryList />} />
           <Route path="/signin" element={<SignIn />} />
+          <Route path="/repository/:id" element={<SingleRepositoryView />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </View>
