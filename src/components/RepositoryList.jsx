@@ -1,3 +1,4 @@
+import { Picker } from "@react-native-picker/picker";
 import { useState } from "react";
 import {
   FlatList,
@@ -7,7 +8,6 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { Picker } from "@react-native-picker/picker";
 import { useNavigate } from "react-router-native";
 import { useDebounce } from "use-debounce";
 import { useRepositories } from "../hooks/useRepositories";
@@ -39,7 +39,7 @@ const RepositoryList = () => {
   const { repositories, loading, error } = useRepositories(
     selectedSort.orderBy,
     selectedSort.orderDirection,
-    debouncedSearchKeyword
+    debouncedSearchKeyword,
   );
 
   const handleRepositoryPress = (id) => {

@@ -8,10 +8,28 @@ import AuthStorage from "../utils/authStorage";
 const authStorage = new AuthStorage();
 
 const ME = gql`
-  query me {
+  query getCurrentUser($includeReviews: Boolean = false) {
     me {
       id
       username
+      reviews @include(if: $includeReviews) {
+        edges {
+          node {
+            id
+            text
+            rating
+            createdAt
+            repository {
+              id
+              fullName
+            }
+            user {
+              id
+              username
+            }
+          }
+        }
+      }
     }
   }
 `;
@@ -20,6 +38,7 @@ const AppBar = () => {
   const navigate = useNavigate();
   const apolloClient = useApolloClient();
   const { data } = useQuery(ME, {
+    variables: { includeReviews: false },
     fetchPolicy: "cache-and-network",
   });
 

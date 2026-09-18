@@ -31,7 +31,7 @@ export const GET_REPOSITORIES = gql`
 export const useRepositories = (
   orderBy = "CREATED_AT",
   orderDirection = "DESC",
-  searchKeyword = ""
+  searchKeyword = "",
 ) => {
   const { data, loading, error } = useQuery(GET_REPOSITORIES, {
     variables: { orderBy, orderDirection, searchKeyword },
