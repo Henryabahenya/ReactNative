@@ -35,7 +35,7 @@ const RepositoryStats = ({ stars, forks, reviews, rating }) => {
 
 const RepositoryItem = ({ item }) => {
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID="repositoryItem">
       <View style={styles.headerRow}>
         <Image source={{ uri: item.ownerAvatarUrl }} style={styles.avatar} />
 
