@@ -1,6 +1,6 @@
 import {
   ActivityIndicator,
-  ScrollView,
+  FlatList,
   StyleSheet,
   Text,
   View,
@@ -8,6 +8,7 @@ import {
 import { useParams } from "react-router-native";
 import { useRepository } from "../hooks/useRepository";
 import RepositoryItem from "./RepositoryItem";
+import ReviewItem from "./ReviewItem";
 
 const SingleRepositoryView = () => {
   const { id } = useParams();
@@ -38,11 +39,21 @@ const SingleRepositoryView = () => {
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.separator} />
-      <RepositoryItem item={repository} showGitHubButton={true} />
-      <View style={styles.separator} />
-    </ScrollView>
+    <FlatList
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      data={repository.reviews?.edges?.map((edge) => edge.node) ?? []}
+      renderItem={({ item }) => <ReviewItem review={item} />}
+      keyExtractor={(item) => item.id}
+      ListHeaderComponent={
+        <View>
+          <View style={styles.separator} />
+          <RepositoryItem item={repository} showGitHubButton={true} />
+          <View style={styles.separator} />
+        </View>
+      }
+      ItemSeparatorComponent={() => <View style={styles.reviewSeparator} />}
+    />
   );
 };
 
@@ -67,6 +78,10 @@ const styles = StyleSheet.create({
   separator: {
     height: 10,
     backgroundColor: "#e1e4e8",
+  },
+  reviewSeparator: {
+    height: 1,
+    backgroundColor: "#d0d7de",
   },
 });
 
