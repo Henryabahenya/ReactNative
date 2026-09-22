@@ -1,8 +1,10 @@
-import { gql, useApolloClient, useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import Constants from "expo-constants";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Link, useNavigate } from "react-router-native";
 
+import apolloClient from "../apolloClient";
 import AuthStorage from "../utils/authStorage";
 
 const authStorage = new AuthStorage();
@@ -36,7 +38,6 @@ const ME = gql`
 
 const AppBar = () => {
   const navigate = useNavigate();
-  const apolloClient = useApolloClient();
   const { data } = useQuery(ME, {
     variables: { includeReviews: false },
     fetchPolicy: "cache-and-network",

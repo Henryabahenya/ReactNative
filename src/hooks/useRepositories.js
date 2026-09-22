@@ -1,8 +1,9 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 
 export const GET_REPOSITORIES = gql`
   query repositories(
-    $orderBy: RepositoryOrderBy
+    $orderBy: AllRepositoriesOrderBy
     $orderDirection: OrderDirection
     $searchKeyword: String
   ) {

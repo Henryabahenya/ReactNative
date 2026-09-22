@@ -1,5 +1,7 @@
 import { Formik } from "formik";
+import { useState } from "react";
 import {
+  ActivityIndicator,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -30,8 +32,10 @@ const SignUp = () => {
   const navigate = useNavigate();
   const [signUp] = useSignUp();
   const [signIn] = useSignIn();
+  const [submitError, setSubmitError] = useState(null);
 
   const handleSubmit = async (values) => {
+    setSubmitError(null);
     try {
       await signUp({
         username: values.username,
@@ -46,11 +50,16 @@ const SignUp = () => {
       navigate("/");
     } catch (error) {
       console.error("Sign up failed:", error);
+      setSubmitError(error.message || "Sign up failed");
+      throw error;
     }
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      style={styles.scrollView}
+    >
       <View style={styles.formContainer}>
         <Text style={styles.title}>Sign up</Text>
 
@@ -71,6 +80,7 @@ const SignUp = () => {
             errors,
             touched,
             isValid,
+            isSubmitting,
           }) => {
             const usernameError = touched.username && errors.username;
             const passwordError = touched.password && errors.password;
@@ -137,12 +147,23 @@ const SignUp = () => {
                   ) : null}
                 </View>
 
+                {submitError ? (
+                  <Text style={styles.errorText}>{submitError}</Text>
+                ) : null}
+
                 <Pressable
-                  style={[styles.button, !isValid && styles.buttonDisabled]}
+                  style={[
+                    styles.button,
+                    (!isValid || isSubmitting) && styles.buttonDisabled,
+                  ]}
                   onPress={formikHandleSubmit}
-                  disabled={!isValid}
+                  disabled={!isValid || isSubmitting}
                 >
-                  <Text style={styles.buttonText}>Sign up</Text>
+                  {isSubmitting ? (
+                    <ActivityIndicator color="#fff" />
+                  ) : (
+                    <Text style={styles.buttonText}>Sign up</Text>
+                  )}
                 </Pressable>
               </View>
             );
@@ -160,6 +181,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#e1e4e8",
     padding: 20,
+  },
+  scrollView: {
+    flex: 1,
   },
   formContainer: {
     width: "100%",

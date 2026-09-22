@@ -1,5 +1,7 @@
+import { ApolloProvider } from "@apollo/client/react";
 import { StyleSheet, View } from "react-native";
 import { NativeRouter, Navigate, Route, Routes } from "react-router-native";
+import apolloClient from "./apolloClient";
 import AppBar from "./components/AppBar";
 import CreateReview from "./components/CreateReview";
 import RepositoryList from "./components/RepositoryList";
@@ -9,26 +11,29 @@ import SingleRepositoryView from "./components/SingleRepositoryView";
 
 const Main = () => {
   return (
-    <NativeRouter>
-      <View style={styles.container}>
-        <AppBar />
+    <ApolloProvider client={apolloClient}>
+      <NativeRouter>
+        <View style={styles.container}>
+          <AppBar />
 
-        <Routes>
-          <Route path="/" element={<RepositoryList />} />
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/review" element={<CreateReview />} />
-          <Route path="/repository/:id" element={<SingleRepositoryView />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </View>
-    </NativeRouter>
+          <Routes>
+            <Route path="/" element={<RepositoryList />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/review" element={<CreateReview />} />
+            <Route path="/repository/:id" element={<SingleRepositoryView />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </View>
+      </NativeRouter>
+    </ApolloProvider>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#e1e4e8',
   },
 });
 

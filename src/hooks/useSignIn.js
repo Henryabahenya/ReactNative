@@ -1,5 +1,7 @@
-import { gql, useApolloClient, useMutation } from "@apollo/client";
+import { gql } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 
+import apolloClient from "../apolloClient";
 import AuthStorage from "../utils/authStorage";
 
 const authStorage = new AuthStorage();
@@ -13,7 +15,6 @@ const AUTHENTICATE = gql`
 `;
 
 const useSignIn = () => {
-  const apolloClient = useApolloClient();
   const [mutate, result] = useMutation(AUTHENTICATE);
 
   const signIn = async ({ username, password }) => {
